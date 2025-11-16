@@ -3,6 +3,7 @@ pipeline{
 
   environment {
     DOCKERHUB_CREDENTIALS=credentials("dockerhub")
+    SONAR_PROJECT_KEY = 'DataStore-App'
   }
 
   parameters {
@@ -33,6 +34,18 @@ pipeline{
         """
       }
     }
+    stage("SonarQube Analysis") {
+            steps {
+                echo "-------- Starting SonarQube Analysis --------"
+                // Assuming your credential ID is 'sonarqube-token' and scanner tool is 'SONAR_SCANNER_HOME'
+                withSonarQubeEnv(credentialsId: 'sonarqube-token', installationName: 'SONAR_SCANNER_HOME') {
+                    // Running analysis on a Maven project
+                    // -Dsonar.qualitygate.wait=true makes the pipeline wait for the quality gate result
+                    sh "mvn sonar:sonar -Dsonar.projectKey=${env.SONAR_PROJECT_KEY} -Dsonar.qualitygate.wait=true"
+                }
+                echo "-------- SonarQube Analysis Submitted --------"
+            }
+        }
     stage("Artifact Store") {
       steps {
         sh """
