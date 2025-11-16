@@ -1,6 +1,10 @@
 pipeline{
   agent any
 
+  environment {
+    DOCKERHUB_CREDENTIALS=credentials("dockerhub")
+  }
+
   parameters {
     string(name: "App_Version", description: "provide application version")
   }
@@ -53,6 +57,28 @@ pipeline{
           echo "-------- Scanning Docker Image --------"
           trivy image datastore:"${App_Version}"
           echo "-------- Scanning Docker Image Complete --------"
+        """
+      }
+    }
+    stage("Docker Image Tag") {
+      steps{
+        sh """
+          echo "-------- Tagging Docker Image --------"
+          docker tag datastore:"${App_Version}" mahi7888/datastore:"${App_Version}"
+          echo "-------- Tagging Docker Image Completed."
+        """
+      }
+    }
+    stage("Loggingin & Pushing Docker image") {
+      steps {
+        sh """
+          echo "-------- Logging To DockerHub --------"
+          docker login -u $DOCKERHUB_CREDENTIALS_USR --password $DOCKERHUB_CREDENTIALS_PSW
+          echo "-------- DockerHub Login Successful --------"
+
+          echo "-------- Pushing Docker Image To DockerHub --------"
+          docker push mahi7888/datastore:"${App_Version}"
+          echo "-------- Docker Image Pushed Successfully --------"
         """
       }
     }
