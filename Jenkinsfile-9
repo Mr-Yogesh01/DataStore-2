@@ -101,7 +101,8 @@ pipeline{
         build job: "KubernetesDeployment", parameters: [string(name: "App_Name", value: "datastore-deploy"), string(name: "App_Version", value: "${params.App_Version}")]
       }
     }
-    post {
+  }
+  post {
         success {
             slackSend channel: '#alerting',
                       color: 'good',
@@ -132,5 +133,4 @@ pipeline{
                       message: "ℹ️ Build finished: `${env.JOB_NAME} #${env.BUILD_NUMBER}`"
         }
     }
-  }
 }
