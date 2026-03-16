@@ -3,7 +3,7 @@ pipeline{
 
   environment {
     DOCKERHUB_CREDENTIALS=credentials("Yogesh")
-    SONAR_PROJECT_KEY = 'DataStore-App'
+    SONAR_PROJECT_KEY = 'yogi'
   }
 
   parameters {
