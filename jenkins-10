@@ -59,7 +59,7 @@ pipeline{
       steps {
         sh """
           echo "-------- Building Docker Image --------"
-          docker build -t datastore:"${App_Version}" .
+          docker docker build -t backend:"${App_Version}" .
           echo "-------- Image Successfully Built --------"
         """
       }
@@ -68,7 +68,7 @@ pipeline{
       steps {
         sh """
           echo "-------- Scanning Docker Image --------"
-          trivy image datastore:"${App_Version}"
+          trivy image backend:"${App_Version}"
           echo "-------- Scanning Docker Image Complete --------"
         """
       }
@@ -77,7 +77,7 @@ pipeline{
       steps{
         sh """
           echo "-------- Tagging Docker Image --------"
-          docker tag datastore:"${App_Version}" mahi7888/datastore:"${App_Version}"
+        docker tag backend:latest 544994274757.dkr.ecr.us-east-1.amazonaws.com/backend:latest:"${App_Version}" mahi7888/datastore:"${App_Version}"
           echo "-------- Tagging Docker Image Completed."
         """
       }
@@ -86,11 +86,11 @@ pipeline{
       steps {
         sh """
           echo "-------- Logging To DockerHub --------"
-          docker login -u $DOCKERHUB_CREDENTIALS_USR --password $DOCKERHUB_CREDENTIALS_PSW
+         aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 544994274757.dkr.ecr.us-east-1.amazonaws.com
           echo "-------- DockerHub Login Successful --------"
 
           echo "-------- Pushing Docker Image To DockerHub --------"
-          docker push mahi7888/datastore:"${App_Version}"
+          docker push 544994274757.dkr.ecr.us-east-1.amazonaws.com/backend:latest:"${App_Version}"
           echo "-------- Docker Image Pushed Successfully --------"
         """
       }
