@@ -38,7 +38,7 @@ pipeline{
             steps {
                 echo "-------- Starting SonarQube Analysis --------"
                 // Assuming your credential ID is 'sonarqube-token' and scanner tool is 'SONAR_SCANNER_HOME'
-                withSonarQubeEnv(credentialsId: 'sonarqube-token', installationName: 'SonarQube Scanner') {
+                withSonarQubeEnv(credentialsId: 'sonarqube-token', installationName: 'SONAR_SCANNER_HOME') {
                     // Running analysis on a Maven project
                     // -Dsonar.qualitygate.wait=true makes the pipeline wait for the quality gate result
                     sh "mvn sonar:sonar -Dsonar.projectKey=${env.SONAR_PROJECT_KEY} -Dsonar.qualitygate.wait=true"
